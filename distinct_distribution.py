@@ -51,6 +51,7 @@ def writer_csv(output_file,output_dict):
 
     return
 
+
 # 参数：输入文件路径，主列序号，去重列序号
 output_dict,num = distinct_distribution('D:\\backup\\clientdata001.txt',6,7)
 
