@@ -18,10 +18,10 @@ def distinct_distribution(input_file,key_column,distinct_column):
     output_dict = {}
     distinct_set = set()   
 
-    for line in data:
+    for record in data:
 
-        key_temp = line.split('\t')[key_column]
-        distinct_temp = line.split('\t')[distinct_column]
+        key_temp = record.split('\t')[key_column]
+        distinct_temp = record.split('\t')[distinct_column]
         
         if distinct_temp in distinct_set:
             pass
