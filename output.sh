@@ -1,15 +1,15 @@
-# 用于查批量计费名在时间段内的过滤比例，并格式化输出
+# 用于查批量计费名在时间段内的过滤比例，并格式化输出到output.txt
 
 # 计费名数组
 array_cntname=(
 )
 
 # 时间区间（不支持跨月)
-first_day=20160501
-last_day=20160523
+first_day=20160701
+last_day=20160705
 
-# 指定dsp：all/nova/newdsp/mob
-dsp=all
+# 指定dsp：all/nova/newdsp/mob/total/lu
+dsp=total
 
 # --- 运行前请配置以上参数 ---
 
@@ -43,14 +43,21 @@ query(){
         elif [ "${dsp}" = "mob" ]
         then
                 filename_dsp="para_mob_cntname_filter"
+	elif [ "${dsp}" = "total" ]
+	then
+		filename_dsp="total_cntname_filter"
+	elif [ "${dsp}" = "lu" ]
+	then
+		filename_dsp="lu_cntname_filter"
         else
-                echo "请指定dsp:all/nova/newdsp/mob"
+                echo "请指定dsp:all/nova/newdsp/mob/total/lu"
                 exit 1
         fi
 
         filename_day=${first_day}
 
-	echo -ne ${cntname}"|"
+	echo -ne ${cntname}"|" >> output.txt
+	# echo -ne ${cntname}
 
         while (( ${filename_day}<=${last_day} ))
         do
@@ -62,11 +69,13 @@ query(){
 			temp="NA"
 		fi
 
-                echo -ne ${temp}"|"
+                echo -ne ${temp}"|" >> output.txt
+		# echo -ne ${temp}"|"
                 (( filename_day++ ))
         done
 
-        echo -e "\n"
+        echo -e "\n" >> output.txt
+	# echo -e "\n"
 }
 
 for cntname in ${array_cntname[@]}

@@ -1,5 +1,5 @@
 :<<!
-sh sync.sh [all/nova/newdsp/mob] [开始时间] [结束时间]
+sh sync.sh [all/nova/newdsp/mob/total/lu] [开始时间] [结束时间]
 例：sh sync.sh all 20160401 20160430
 不支持数据跨月
 !
@@ -36,8 +36,14 @@ sync(){
         elif [ "${dsp}" = "mob" ]
         then
                 filename_dsp="para_mob_cntname_filter"
+	elif [ "${dsp}" = "total" ]
+	then
+		filename_dsp="total_cntname_filter"
+	elif [ "${dsp}" = "lu" ]
+	then
+		filename_dsp="lu_cntname_filter"
         else
-                echo "请指定dsp:all/nova/newdsp/mob"
+                echo "请指定dsp:all/nova/newdsp/mob/total/lu"
                 exit 1
         fi
 

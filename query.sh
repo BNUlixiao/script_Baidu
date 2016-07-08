@@ -1,5 +1,5 @@
 :<<!
-sh query.sh [all/nova/newdsp/mob] [计费名] [开始时间] [结束时间/缺省等于开始时间]
+sh query.sh [all/nova/newdsp/mob/total/lu] [计费名] [开始时间] [结束时间/缺省等于开始时间]
 例：sh query.sh all 52005098_cpr 20160401 20160430
 不支持数据跨月
 !
@@ -34,8 +34,14 @@ query(){
         elif [ "${dsp}" = "mob" ]
         then
                 filename_dsp="para_mob_cntname_filter"
+	elif [ "${dsp}" = "total" ]
+	then
+		filename_dsp="total_cntname_filter"
+	elif [ "${dsp}" = "lu" ]
+	then
+		filename_dsp="lu_cntname_filter"
         else
-                echo "请指定dsp:all/nova/newdsp/mob"
+                echo "请指定dsp:all/nova/newdsp/mob/total/lu"
 		exit 1
         fi
 
