@@ -1,29 +1,45 @@
-:<<!
-²éÑ¯¼Æ·ÑÃûÔÚÊ±¼ä¶ÎÄÚµÄÊı¾İ£¬Êä³ö½á¹ûÎª£º¹ıÂËµã»÷£¬Ô­Ê¼µã»÷£¬¹ıÂË±ÈÀı£¬¹ıÂËºóÏû·Ñ£¬Ô­Ê¼Ïû·Ñ
-sh sum_query.sh [all/nova/newdsp/mob/total/lu] [¼Æ·ÑÃû] [¿ªÊ¼Ê±¼ä] [½áÊøÊ±¼ä/È±Ê¡µÈÓÚ¿ªÊ¼Ê±¼ä]
-Àı£ºsh sum_query.sh all 52005098_cpr 20160401 20160430
-²»Ö§³ÖÊı¾İ¿çÔÂ
-!
+# ¼Æ·ÑÃûÊı×é
+array_cntname=(
+50067173_cpr
+06069184_cpr
+10057154_cpr
+22029121_cpr
+73013154_cpr
+94008184_cpr
+39056120_cpr
+34021174_cpr
+85029194_cpr
+freebabacn_cpr
+)
+
+# Ê±¼äÇø¼ä£¨²»Ö§³Ö¿çÔÂ)
+first_day=20160706
+last_day=20160711
+
+# Ö¸¶¨dsp£ºall/nova/newdsp/mob/total/lu
+dsp=total
+
+# --- ÔËĞĞÇ°ÇëÅäÖÃÒÔÉÏ²ÎÊı ---
 
 query(){
-	dsp=$1
-	cntname=$2
-	first_day=$3
+        dsp=$1
+        cntname=$2
+        first_day=$3
 
-	if (( $#==3 ))
-	then
-		last_day=${first_day}
-	else
-		last_day=$4
-	fi
+        if (( $#==3 ))
+        then
+                last_day=${first_day}
+        else
+                last_day=$4
+        fi
 
-	if (( ${last_day}-${first_day}>30 ))
-	then
-		echo "²»Ö§³ÖÊı¾İ¿çÔÂ"
-		exit 1
-	fi
+        if (( ${last_day}-${first_day}>30 ))
+        then
+                echo "²»Ö§³ÖÊı¾İ¿çÔÂ"
+                exit 1
+        fi
 
-	if [ "${dsp}" = "all" ]
+        if [ "${dsp}" = "all" ]
         then
                 filename_dsp="para_cntname_filter"
         elif [ "${dsp}" = "nova" ]
@@ -43,12 +59,12 @@ query(){
 		filename_dsp="lu_cntname_filter"
         else
                 echo "ÇëÖ¸¶¨dsp:all/nova/newdsp/mob/total/lu"
-		exit 1
+                exit 1
         fi
 
-	filename_day=${first_day}
+        filename_day=${first_day}
 
-	echo -e "\n"${cntname}"_"${dsp}"_"${first_day}"to"${last_day}
+        echo -e "\n"${cntname}"_"${dsp}"_"${first_day}"to"${last_day}
 
 	clc_filter=0
 	clc_all=0
@@ -59,7 +75,7 @@ query(){
 	do
 		file=${filename_dsp}"."${filename_day}
 		
-		# awkÖĞ²ÎÊıÑ¡Ôñ£º£$0 all | $1 ¼Æ·ÑÃû | $2 ¹ıÂË±ÈÀı | $(NF-3) ±»¹ıÂËµã»÷  | $(NF-2) ¹ıÂËµã»÷ | $(NF-1) ¹ıÂËºóÏû·Ñ | $NF Ô­Ê¼Ïû·Ñ
+		# awkÖĞ²ÎÊıÑ¡Ôñ£º?0 all | $1 ¼Æ·ÑÃû | $2 ¹ıÂË±ÈÀı | $(NF-3) ±»¹ıÂËµã»÷  | $(NF-2) ¹ıÂËµã»÷ | $(NF-1) ¹ıÂËºóÏû·Ñ | $NF Ô­Ê¼Ïû·Ñ
 		clc_filter_temp=$(awk -v cntname="$cntname" -F '\t' '{if($1==cntname)print$(NF-3)}' ${file})
 		clc_filter_temp=${clc_filter_temp:-0}
 		clc_all_temp=$(awk -v cntname="$cntname" -F '\t' '{if($1==cntname)print$(NF-2)}' ${file})
@@ -67,8 +83,8 @@ query(){
 		spend_afterfilter_temp=$(awk -v cntname="$cntname" -F '\t' '{if($1==cntname)print$(NF-1)}' ${file})
 		spend_afterfilter_temp=${spend_afterfilter_temp:-0}
 		spend_all_temp=$(awk -v cntname="$cntname" -F '\t' '{if($1==cntname)print$NF}' ${file})
-		spend_all_temp=${spend_all_temp:-0}	
-	
+		spend_all_temp=${spend_all_temp:-0}
+		
 		clc_filter=$((clc_filter + clc_filter_temp))
 		clc_all=$((clc_all + clc_all_temp))
 		spend_afterfilter=$(echo "$spend_afterfilter + $spend_afterfilter_temp" | bc)
@@ -80,6 +96,10 @@ query(){
 	clc_filterrate=$(awk 'BEGIN{printf "%.2f%\n",('$clc_filter'/'$clc_all')*100}')
 	
 	echo -e "${clc_filter}\t${clc_all}\t${clc_filterrate}\t${spend_afterfilter}\t${spend_all}"
+
 }
 
-query $1 $2 $3 $4
+for cntname in ${array_cntname[@]}
+do
+	query ${dsp} ${cntname} ${first_day} ${last_day}
+done
